@@ -7,12 +7,13 @@ services:
     depends_on:
       - db
     environment:
-      - POSTGRES_USER=$YOUR_USERNAME
-      - POSTGRES_PASSWORD=$YOUR_PASSWORD
+      #- POSTGRES_USER=$YOUR_USERNAME
+      #- POSTGRES_PASSWORD=$YOUR_PASSWORD
+      # these are config values overrides the application.properties values
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/$YOUR_DB_NAME
       - SPRING_DATASOURCE_USERNAME=$YOUR_USERNAME
       - SPRING_DATASOURCE_PASSWORD=$YOUR_PASSWORD
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      #- SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
     ports:
       - "8080:8080"
@@ -22,12 +23,18 @@ services:
     restart: always
     # set shared memory limit when using docker-compose
     shm_size: 128mb
+    volumes:
+      # config for linux docker host mount to ./postgres-data
+      - ./postgres-data:/var/lib/postgresql/data
+      # config for windows docker host drive on C:\software\postgres\data
+      #- C:\software\postgres\data:/var/lib/postgresql/data
     # or set shared memory limit when deploy via swarm stack
     #volumes:
     #  - type: tmpfs
     #    target: /dev/shm
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
+    # below are postgres superuser user/password. must have to start
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'admin'
